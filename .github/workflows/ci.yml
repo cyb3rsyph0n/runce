@@ -46,11 +46,14 @@ jobs:
   publish:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip-publish]')
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -65,7 +68,7 @@ jobs:
     - name: Build project
       run: npm run build
       
-    - name: Check if version changed
+    - name: Check if version needs bumping
       id: version-check
       run: |
         CURRENT_VERSION=$(node -p "require('./package.json').version")
@@ -74,12 +77,44 @@ jobs:
         # Check if this version exists on npm
         if npm view @nurv-llc/runce@$CURRENT_VERSION version 2>/dev/null; then
           echo "version-exists=true" >> $GITHUB_OUTPUT
+          echo "Version $CURRENT_VERSION already exists on npm, will auto-bump"
         else
           echo "version-exists=false" >> $GITHUB_OUTPUT
+          echo "Version $CURRENT_VERSION is new, will publish as-is"
         fi
+    
+    - name: Auto-bump version if needed
+      if: steps.version-check.outputs.version-exists == 'true'
+      run: |
+        # Configure git
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Check commit message to determine bump type
+        COMMIT_MSG="${{ github.event.head_commit.message }}"
+        if [[ "$COMMIT_MSG" =~ \[major\] ]]; then
+          echo "Detected [major] in commit message, bumping major version"
+          npm version major --no-git-tag-version
+        elif [[ "$COMMIT_MSG" =~ \[minor\] ]]; then
+          echo "Detected [minor] in commit message, bumping minor version"  
+          npm version minor --no-git-tag-version
+        else
+          echo "Auto-bumping patch version"
+          npm version patch --no-git-tag-version
+        fi
+        
+        # Get the new version
+        NEW_VERSION=$(node -p "require('./package.json').version")
+        echo "Bumped to version $NEW_VERSION"
+        
+        # Create and push tag
+        git add package.json package-lock.json
+        git commit -m "Auto-bump version to $NEW_VERSION [skip ci]"
+        git tag "v$NEW_VERSION"
+        git push origin master
+        git push origin "v$NEW_VERSION"
       
     - name: Publish to npm
-      if: steps.version-check.outputs.version-exists == 'false'
       run: npm publish --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
