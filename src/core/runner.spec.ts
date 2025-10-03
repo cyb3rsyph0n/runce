@@ -1,12 +1,12 @@
 import { runTasks } from './runner.js';
-import { ITracker } from '../interfaces/itracker.interface.js';
-import { AppliedRecord } from '../interfaces/applied-record.interface.js';
-import { LoadedTask } from '../interfaces/loaded-task.interface.js';
-import { Config } from '../interfaces/config.interface.js';
-import { Logger } from '../interfaces/logger.interface.js';
-import { RunTasksOptions } from '../interfaces/run-tasks-options.interface.js';
-import { RunceTaskContext } from '../interfaces/runce-task-context.interface.js';
-import { TrackerInit } from '../interfaces/tracker-init.interface.js';
+import { ITracker } from '../@interfaces/itracker.interface.js';
+import { AppliedRecord } from '../@interfaces/applied-record.interface.js';
+import { LoadedTask } from '../@interfaces/loaded-task.interface.js';
+import { Config } from '../@interfaces/config.interface.js';
+import { Logger } from '../@interfaces/logger.interface.js';
+import { RunTasksOptions } from '../@interfaces/run-tasks-options.interface.js';
+import { RunceTaskContext } from '../@interfaces/runce-task-context.interface.js';
+import { TrackerInit } from '../@interfaces/tracker-init.interface.js';
 
 // Mock tracker for testing
 class MockTracker implements ITracker {

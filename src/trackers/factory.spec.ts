@@ -1,7 +1,7 @@
 import { createTracker } from './factory.js';
 import { MongoTracker } from './mongo-tracker.js';
 import { FileTracker } from './file-tracker.js';
-import { ITracker } from '../interfaces/itracker.interface.js';
+import { ITracker } from '../@interfaces/itracker.interface.js';
 
 describe('tracker factory', () => {
   describe('createTracker', () => {

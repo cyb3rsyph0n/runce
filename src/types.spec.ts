@@ -1,5 +1,5 @@
 import { defineConfig } from './types.js';
-import { Config } from './interfaces/config.interface.js';
+import { Config } from './@interfaces/config.interface.js';
 
 describe('types', () => {
   describe('defineConfig', () => {

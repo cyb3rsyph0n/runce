@@ -1,5 +1,5 @@
 import { LockManager } from './lock.js';
-import { ITracker } from '../interfaces/itracker.interface.js';
+import { ITracker } from '../@interfaces/itracker.interface.js';
 
 // Mock tracker for testing
 class MockTracker implements ITracker {
