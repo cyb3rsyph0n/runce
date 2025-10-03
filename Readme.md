@@ -1,10 +1,10 @@
 
 # @nurv-llc/runce
 
-[![CI](https://github.com/nurv-llc/runce/actions/workflows/ci.yml/badge.svg)](https://github.com/nurv-llc/runce/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-75%20passed-brightgreen)](https://github.com/nurv-llc/runce/actions)
-[![npm version](https://badge.fury.io/js/@nurv-llc%2Frunce.svg)](https://badge.fury.io/js/@nurv-llc%2Frunce)
-[![codecov](https://codecov.io/gh/nurv-llc/runce/branch/master/graph/badge.svg)](https://codecov.io/gh/nurv-llc/runce)
+[![CI](https://github.com/cyb3rsyph0n/runce/actions/workflows/ci.yml/badge.svg)](https://github.com/cyb3rsyph0n/runce/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-75%20passed-brightgreen)](https://github.com/cyb3rsyph0n/runce/actions)
+[![npm version](https://img.shields.io/npm/v/@nurv-llc/runce.svg)](https://www.npmjs.com/package/@nurv-llc/runce)
+[![codecov](https://codecov.io/gh/cyb3rsyph0n/runce/branch/master/graph/badge.svg)](https://codecov.io/gh/cyb3rsyph0n/runce)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/node/v/@nurv-llc/runce.svg)](https://nodejs.org/)
 
