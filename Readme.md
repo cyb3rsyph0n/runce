@@ -1,10 +1,7 @@
 
 # @nurv-llc/runce
 
-[![CI](https://github.com/nurv-llc/runce/actions/workflows/ci.yml/badge.svg)](https://github.com/nurv-llc/runce/actions/workf```ts
-import { runWithConfig, runWithConfigObject, listApplied, listAppliedWithConfig, defineConfig } from '@nurv-llc/runce';
-
-// File-based configurationows/ci.yml)
+[![CI](https://github.com/nurv-llc/runce/actions/workflows/ci.yml/badge.svg)](https://github.com/nurv-llc/runce/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-75%20passed-brightgreen)](https://github.com/nurv-llc/runce/actions)
 [![npm version](https://badge.fury.io/js/@nurv-llc%2Frunce.svg)](https://badge.fury.io/js/@nurv-llc%2Frunce)
 [![codecov](https://codecov.io/gh/nurv-llc/runce/branch/master/graph/badge.svg)](https://codecov.io/gh/nurv-llc/runce)
@@ -77,11 +74,24 @@ Tasks can be written in either **TypeScript** or **JavaScript**:
 
 **TypeScript (Recommended):**
 ```ts
-```ts
 // tasks/001-setup-db.ts
 import { RunceTask } from '@nurv-llc/runce';
 
 export default {
+  id: '001-setup-db',
+  title: 'Set up database indexes',
+  async run({ log }) {
+    log('Setting up database indexes...');
+    // Your one-time setup logic here
+    log('Database indexes created successfully');
+  },
+  
+  // Optional: check if task is already done
+  async alreadyDone({ log }) {
+    // Return true if task should be skipped
+    return false;
+  },
+} satisfies RunceTask;
 ```
 
 **JavaScript:**
@@ -146,9 +156,9 @@ runce run --help
 ## Programmatic API
 
 ```ts
-import { runWithConfig, runWithConfigObject, listApplied, listAppliedWithConfig, defineConfig } from '@nurv/runce';
+import { runWithConfig, runWithConfigObject, listApplied, listAppliedWithConfig, defineConfig } from '@nurv-llc/runce';
 
-// Load config from file
+// File-based configuration
 await runWithConfig('./config/runce.config.ts');
 
 // Or pass config object directly (useful for dynamic configuration)
