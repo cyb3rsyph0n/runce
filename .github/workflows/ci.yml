@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ master, main ]
 
+permissions:
+  contents: write       # Needed to push commits and tags
+  packages: read        # Needed to read packages
+  actions: read         # Needed for workflow permissions
+  pull-requests: write  # Needed for PR operations
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -86,9 +92,10 @@ jobs:
     - name: Auto-bump version if needed
       if: steps.version-check.outputs.version-exists == 'true'
       run: |
-        # Configure git
+        # Configure git with token authentication
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         
         # Check commit message to determine bump type
         COMMIT_MSG="${{ github.event.head_commit.message }}"
