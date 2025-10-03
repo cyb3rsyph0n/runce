@@ -1,4 +1,4 @@
-import { MongoTracker } from '../src/trackers/mongo-tracker.js';
+import { MongoTracker } from './mongo-tracker.js';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
 describe('MongoTracker', () => {

@@ -1,6 +1,6 @@
-export interface Logger {
-  (...args: any[]): void;
-}
+import { Logger } from '../interfaces/logger.interface.js';
+
+export { Logger } from '../interfaces/logger.interface.js';
 
 export function createLogger(prefix?: string): Logger {
   return (...args: any[]) => {

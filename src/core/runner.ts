@@ -4,18 +4,8 @@ import { Config, RunceTaskContext } from '../types.js';
 import { LockManager } from './lock.js';
 import { Logger } from './logger.js';
 
-export interface RunTasksOptions {
-  tracker: ITracker;
-  tasks: LoadedTask[];
-  config: Config;
-  log: Logger;
-  dryRun?: boolean;
-  filters?: {
-    only?: string[];
-    since?: string;
-    until?: string;
-  };
-}
+export { RunTasksOptions } from '../interfaces/run-tasks-options.interface.js';
+import { RunTasksOptions } from '../interfaces/run-tasks-options.interface.js';
 
 export async function runTasks(opts: RunTasksOptions): Promise<void> {
   const { tracker, tasks, config, log, dryRun = false, filters } = opts;

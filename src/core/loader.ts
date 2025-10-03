@@ -4,11 +4,8 @@ import { pathToFileURL } from 'url';
 import { RunceTask } from '../types.js';
 import { calculateChecksum } from './checksum.js';
 
-export interface LoadedTask {
-  task: RunceTask;
-  filePath: string;
-  checksum: string;
-}
+export { LoadedTask } from '../interfaces/loaded-task.interface.js';
+import { LoadedTask } from '../interfaces/loaded-task.interface.js';
 
 export async function loadTasks(tasksDir: string): Promise<LoadedTask[]> {
   try {

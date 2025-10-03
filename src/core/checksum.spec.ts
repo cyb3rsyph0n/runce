@@ -1,4 +1,4 @@
-import { calculateChecksum } from '../src/core/checksum.js';
+import { calculateChecksum } from './checksum.js';
 import { writeFile, unlink } from 'fs/promises';
 import { join } from 'path';
 
