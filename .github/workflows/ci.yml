@@ -72,7 +72,7 @@ jobs:
         echo "current-version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
         
         # Check if this version exists on npm
-        if npm view @nurv/runce@$CURRENT_VERSION version 2>/dev/null; then
+        if npm view @nurv-llc/runce@$CURRENT_VERSION version 2>/dev/null; then
           echo "version-exists=true" >> $GITHUB_OUTPUT
         else
           echo "version-exists=false" >> $GITHUB_OUTPUT

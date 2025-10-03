@@ -124,7 +124,7 @@ program
       const filename = `${id}.ts`;
       const filePath = path.join(options.tasksDir, filename);
 
-      const template = `import { RunceTask } from '@nurv/runce';
+      const template = `import { RunceTask } from '@nurv-llc/runce';
 
 const task: RunceTask = {
   id: '${id}',

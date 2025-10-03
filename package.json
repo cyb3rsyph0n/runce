@@ -1,5 +1,5 @@
 {
-  "name": "@nurv/runce",
+  "name": "@nurv-llc/runce",
   "version": "1.0.0",
   "description": "Run one-time tasks for Node.js services - like migrations, but for arbitrary TypeScript",
   "type": "module",
@@ -39,6 +39,14 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nurv-llc/runce.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nurv-llc/runce/issues"
+  },
+  "homepage": "https://github.com/nurv-llc/runce#readme",
   "dependencies": {
     "commander": "^11.1.0",
     "mongodb": "^6.2.0",

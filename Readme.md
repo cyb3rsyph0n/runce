@@ -1,12 +1,15 @@
 
-# @nurv/runce
+# @nurv-llc/runce
 
-[![CI](https://github.com/cyb3rsyph0n/runce/actions/workflows/ci.yml/badge.svg)](https://github.com/cyb3rsyph0n/runce/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-75%20passed-brightgreen)](https://github.com/cyb3rsyph0n/runce/actions)
-[![npm version](https://badge.fury.io/js/@nurv%2Frunce.svg)](https://badge.fury.io/js/@nurv%2Frunce)
-[![codecov](https://codecov.io/gh/cyb3rsyph0n/runce/branch/master/graph/badge.svg)](https://codecov.io/gh/cyb3rsyph0n/runce)
+[![CI](https://github.com/nurv-llc/runce/actions/workflows/ci.yml/badge.svg)](https://github.com/nurv-llc/runce/actions/workf```ts
+import { runWithConfig, runWithConfigObject, listApplied, listAppliedWithConfig, defineConfig } from '@nurv-llc/runce';
+
+// File-based configurationows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-75%20passed-brightgreen)](https://github.com/nurv-llc/runce/actions)
+[![npm version](https://badge.fury.io/js/@nurv-llc%2Frunce.svg)](https://badge.fury.io/js/@nurv-llc%2Frunce)
+[![codecov](https://codecov.io/gh/nurv-llc/runce/branch/master/graph/badge.svg)](https://codecov.io/gh/nurv-llc/runce)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/node/v/@nurv/runce.svg)](https://nodejs.org/)
+[![Node.js Version](https://img.shields.io/node/v/@nurv-llc/runce.svg)](https://nodejs.org/)
 
 Run one-time **runce tasks** for your Node service—like migrations, but for arbitrary TypeScript/JavaScript. Ships with a MongoDB tracker and a pluggable interface for others.
 
@@ -22,7 +25,7 @@ Run one-time **runce tasks** for your Node service—like migrations, but for ar
 ## Quick Start
 
 ```bash
-npm i @nurv/runce mongodb
+npm i @nurv-llc/runce mongodb
 npx runce make "initialize queues"
 ```
 
@@ -30,7 +33,7 @@ Generate a config:
 
 ```ts
 // config/runce.config.ts
-import { defineConfig } from '@nurv/runce';
+import { defineConfig } from '@nurv-llc/runce';
 
 export default defineConfig({
   tasksDir: './tasks',
@@ -74,18 +77,11 @@ Tasks can be written in either **TypeScript** or **JavaScript**:
 
 **TypeScript (Recommended):**
 ```ts
-// tasks/20251003T120000.init-queues.ts
-import { RunceTask } from '@nurv/runce';
+```ts
+// tasks/001-setup-db.ts
+import { RunceTask } from '@nurv-llc/runce';
 
-const task: RunceTask = {
-  id: '20251003T120000.init-queues',
-  title: 'Initialize message queues',
-  async run({ log }) {
-    log('creating SQS queues ...');
-    // ... do one-time setup
-  },
-};
-export default task;
+export default {
 ```
 
 **JavaScript:**
