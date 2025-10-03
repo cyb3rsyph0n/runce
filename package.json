@@ -6,12 +6,15 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "runce": "./bin/runce"
+    "runce": "bin/runce"
   },
   "files": [
     "dist",
     "bin"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
