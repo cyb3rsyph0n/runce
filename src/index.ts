@@ -14,6 +14,10 @@ import { Config } from './types.js';
 
 export async function runWithConfig(configPath: string): Promise<void> {
   const config = await loadConfig(configPath);
+  await runWithConfigObject(config);
+}
+
+export async function runWithConfigObject(config: Config): Promise<void> {
   const tracker = createTracker(config.tracker.type);
   await tracker.init(config.tracker.options);
 
@@ -37,6 +41,10 @@ export async function runWithConfig(configPath: string): Promise<void> {
 
 export async function listApplied(configPath: string): Promise<any[]> {
   const config = await loadConfig(configPath);
+  return await listAppliedWithConfig(config);
+}
+
+export async function listAppliedWithConfig(config: Config): Promise<any[]> {
   const tracker = createTracker(config.tracker.type);
   await tracker.init(config.tracker.options);
 

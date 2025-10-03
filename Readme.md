@@ -143,8 +143,53 @@ runce run --help
 ## Programmatic API
 
 ```ts
-import { runWithConfig, listApplied } from '@nurv/runce';
+import { runWithConfig, runWithConfigObject, listApplied, listAppliedWithConfig, defineConfig } from '@nurv/runce';
+
+// Load config from file
 await runWithConfig('./config/runce.config.ts');
+
+// Or pass config object directly (useful for dynamic configuration)
+const config = defineConfig({
+  tasksDir: './tasks',
+  tracker: {
+    type: 'mongo',
+    options: { uri: process.env.MONGO_URI, db: 'infra' },
+  },
+});
+await runWithConfigObject(config);
+
+// List applied tasks
+const records = await listApplied('./config/runce.config.ts');
+// Or with config object
+const records2 = await listAppliedWithConfig(config);
+```
+
+### Use Cases for Config Objects
+
+Passing config objects directly is useful when:
+- **Environment-based configuration**: Build config dynamically based on environment variables
+- **Testing**: Create test configs without filesystem dependencies
+- **Serverless**: Configure runce without requiring config files in deployment packages
+- **Multi-tenant**: Different configurations per tenant or database
+
+```ts
+// Example: Environment-based configuration
+const config = defineConfig({
+  tasksDir: './tasks',
+  tracker: {
+    type: process.env.NODE_ENV === 'production' ? 'mongo' : 'file',
+    options: process.env.NODE_ENV === 'production' 
+      ? { uri: process.env.MONGO_URI, db: process.env.DB_NAME }
+      : { path: './.runce-dev.json' }
+  },
+  lock: { 
+    enabled: process.env.NODE_ENV === 'production',
+    ttlMs: 60000,
+    owner: process.env.HOSTNAME 
+  }
+});
+
+await runWithConfigObject(config);
 ```
 
 ## Tracker Interface
