@@ -1,0 +1,20 @@
+{
+  "applied": [
+    {
+      "id": "20251003T041025.typescript-test-task",
+      "name": "TypeScript test task",
+      "checksum": "c1bc9d01d121acfdea9116c8ea244146defcf65bc0026b9754500e7f4d8781d7",
+      "appliedAt": "2025-10-03T04:10:52.403Z",
+      "durationMs": 1,
+      "status": "success"
+    },
+    {
+      "id": "20251003T034436.create-user-index",
+      "name": "create user index",
+      "checksum": "e05d6fd87a00bb9128cd44a4cf84c4addf05eee46587eeb527b9b09c2a6775ed",
+      "appliedAt": "2025-10-03T04:15:52.028Z",
+      "durationMs": 1,
+      "status": "success"
+    }
+  ]
+}

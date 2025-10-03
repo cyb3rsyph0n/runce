@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+// Simple wrapper that uses tsx when available for TypeScript support
+try {
+  // Try to register tsx for TypeScript support
+  await import('tsx/esm');
+} catch {
+  // tsx not available, continue with normal execution
+}
+
+import('../dist/cli.js').catch(err => {
+  console.error('Failed to start runce CLI:', err);
+  process.exit(1);
+});
