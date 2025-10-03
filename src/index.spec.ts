@@ -4,8 +4,8 @@ describe('index', () => {
       const indexModule = await import('./index.js');
 
       // Check function exports
+      expect(typeof indexModule.run).toBe('function');
       expect(typeof indexModule.runWithConfig).toBe('function');
-      expect(typeof indexModule.runWithConfigObject).toBe('function');
       expect(typeof indexModule.listApplied).toBe('function');
       expect(typeof indexModule.listAppliedWithConfig).toBe('function');
       expect(typeof indexModule.loadTasks).toBe('function');
@@ -15,8 +15,8 @@ describe('index', () => {
 
       // Check type/interface exports exist (they won't have runtime values)
       // These are compile-time checks that the types are properly exported
+      expect(indexModule.run).toBeDefined();
       expect(indexModule.runWithConfig).toBeDefined();
-      expect(indexModule.runWithConfigObject).toBeDefined();
       expect(indexModule.listApplied).toBeDefined();
       expect(indexModule.listAppliedWithConfig).toBeDefined();
     });
@@ -30,7 +30,6 @@ describe('index', () => {
       // runWithConfig and listApplied are the main entry points for the library
       // They integrate all the other components (loader, runner, trackers, etc.)
       expect(typeof require('./index.js').runWithConfig).toBe('function');
-      expect(typeof require('./index.js').runWithConfigObject).toBe('function');
       expect(typeof require('./index.js').listApplied).toBe('function');
       expect(typeof require('./index.js').listAppliedWithConfig).toBe('function');
     });

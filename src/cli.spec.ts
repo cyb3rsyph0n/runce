@@ -57,7 +57,7 @@ describe('cli', () => {
       const indexModule = await import('./index.js');
 
       // Verify that the main functions used by CLI are exported
-      expect(typeof indexModule.runWithConfig).toBe('function');
+      expect(typeof indexModule.run).toBe('function');
       expect(typeof indexModule.listApplied).toBe('function');
       expect(typeof indexModule.loadTasks).toBe('function');
       expect(typeof indexModule.runTasks).toBe('function');

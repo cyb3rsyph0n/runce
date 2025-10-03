@@ -3,7 +3,7 @@
 import { program } from 'commander';
 import path from 'path';
 import fs from 'fs/promises';
-import { runWithConfig, listApplied } from './index.js';
+import { run, listApplied } from './index.js';
 import { createLogger } from './core/logger.js';
 import { createTracker } from './trackers/factory.js';
 import { loadTasks } from './core/loader.js';

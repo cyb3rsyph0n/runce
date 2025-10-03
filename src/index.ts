@@ -12,12 +12,12 @@ import { runTasks } from './core/runner.js';
 import { createLogger } from './core/logger.js';
 import { Config } from './types.js';
 
-export async function runWithConfig(configPath: string): Promise<void> {
+export async function run(configPath: string): Promise<void> {
   const config = await loadConfig(configPath);
-  await runWithConfigObject(config);
+  await runWithConfig(config);
 }
 
-export async function runWithConfigObject(config: Config): Promise<void> {
+export async function runWithConfig(config: Config): Promise<void> {
   const tracker = createTracker(config.tracker.type);
   await tracker.init(config.tracker.options);
 
