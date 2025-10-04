@@ -129,6 +129,7 @@ program
 const task: RunceTask = {
   id: '${id}',
   title: '${name}',
+  // runAlways: true, // Uncomment to run every time (not tracked for completion)
   async run({ log }) {
     log('Starting task: ${name}');
     
@@ -138,6 +139,7 @@ const task: RunceTask = {
     // - Initialize S3 buckets
     // - Seed data
     // - Call external APIs
+    // - For recurring tasks: set runAlways: true
     
     log('Task completed successfully');
   },
@@ -146,6 +148,7 @@ const task: RunceTask = {
   // async alreadyDone({ log }) {
   //   log('Checking if task is already done...');
   //   // Return true if task should be skipped
+  //   // Note: For runAlways tasks, this is still respected
   //   return false;
   // },
 };

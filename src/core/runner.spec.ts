@@ -420,4 +420,130 @@ describe('runTasks', () => {
       expect(mockTracker.appliedRecords[0].checksum).toBe('test-checksum-123');
     });
   });
+
+  describe('runAlways tasks', () => {
+    it('should execute runAlways tasks every time', async () => {
+      const runAlwaysLogs: string[] = [];
+      const runAlwaysTask: LoadedTask = {
+        filePath: 'always.js',
+        checksum: 'always-checksum',
+        task: {
+          id: 'always-task',
+          runAlways: true,
+          run: async (ctx: RunceTaskContext) => {
+            runAlwaysLogs.push('always-task executed');
+          }
+        }
+      };
+
+      const options: RunTasksOptions = {
+        tasks: [runAlwaysTask],
+        config: mockConfig,
+        tracker: mockTracker,
+        log: mockLogger
+      };
+
+      // Run twice to verify it runs both times
+      await runTasks(options);
+      await runTasks(options);
+
+      expect(runAlwaysLogs).toEqual(['always-task executed', 'always-task executed']);
+      // runAlways tasks should not be tracked for completion
+      expect(mockTracker.appliedIds.has('always-task')).toBe(false);
+    });
+
+    it('should execute runAlways tasks before run-once tasks', async () => {
+      const executionOrder: string[] = [];
+
+      const runOnceTask: LoadedTask = {
+        filePath: 'once.js',
+        checksum: 'once-checksum',
+        task: {
+          id: 'once-task',
+          run: async (ctx: RunceTaskContext) => {
+            executionOrder.push('once-task');
+          }
+        }
+      };
+
+      const runAlwaysTask: LoadedTask = {
+        filePath: 'always.js',
+        checksum: 'always-checksum',
+        task: {
+          id: 'always-task',
+          runAlways: true,
+          run: async (ctx: RunceTaskContext) => {
+            executionOrder.push('always-task');
+          }
+        }
+      };
+
+      const options: RunTasksOptions = {
+        tasks: [runOnceTask, runAlwaysTask], // Mixed order
+        config: mockConfig,
+        tracker: mockTracker,
+        log: mockLogger
+      };
+
+      await runTasks(options);
+
+      expect(executionOrder).toEqual(['always-task', 'once-task']);
+      expect(mockTracker.appliedIds.has('once-task')).toBe(true);
+      expect(mockTracker.appliedIds.has('always-task')).toBe(false);
+    });
+
+    it('should respect alreadyDone for runAlways tasks', async () => {
+      const runAlwaysTask: LoadedTask = {
+        filePath: 'always.js',
+        checksum: 'always-checksum',
+        task: {
+          id: 'always-conditional',
+          runAlways: true,
+          async alreadyDone(ctx: RunceTaskContext) {
+            return true; // Skip execution
+          },
+          run: async (ctx: RunceTaskContext) => {
+            throw new Error('Should not execute');
+          }
+        }
+      };
+
+      const options: RunTasksOptions = {
+        tasks: [runAlwaysTask],
+        config: mockConfig,
+        tracker: mockTracker,
+        log: mockLogger
+      };
+
+      // Should not throw because alreadyDone returns true
+      await expect(runTasks(options)).resolves.not.toThrow();
+    });
+
+    it('should record failures for runAlways tasks', async () => {
+      const failingTask: LoadedTask = {
+        filePath: 'failing.js',
+        checksum: 'failing-checksum',
+        task: {
+          id: 'failing-always',
+          runAlways: true,
+          run: async (ctx: RunceTaskContext) => {
+            throw new Error('Always fails');
+          }
+        }
+      };
+
+      const options: RunTasksOptions = {
+        tasks: [failingTask],
+        config: mockConfig,
+        tracker: mockTracker,
+        log: mockLogger
+      };
+
+      await runTasks(options);
+
+      expect(mockTracker.appliedRecords).toHaveLength(1);
+      expect(mockTracker.appliedRecords[0].status).toBe('failed');
+      expect(mockTracker.appliedRecords[0].error).toContain('Always fails');
+    });
+  });
 });

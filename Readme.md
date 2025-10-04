@@ -94,6 +94,29 @@ export default {
 } satisfies RunceTask;
 ```
 
+**Run-Always Tasks:**
+```ts
+// tasks/backup-logs.ts
+import { RunceTask } from '@nurv-llc/runce';
+
+export default {
+  id: 'backup-logs',
+  title: 'Backup application logs',
+  runAlways: true, // 🔄 Runs every time, not tracked for completion
+  async run({ log }) {
+    log('Backing up logs...');
+    // This runs on every execution
+    log('Logs backed up successfully');
+  },
+  
+  // Optional: still respected for runAlways tasks
+  async alreadyDone({ log }) {
+    // Can still conditionally skip if needed
+    return false;
+  },
+} satisfies RunceTask;
+```
+
 **JavaScript:**
 ```js
 // tasks/20251003T120000.init-queues.js
@@ -109,6 +132,29 @@ export default task;
 ```
 
 **Naming:** prefix with an ISO timestamp for natural ordering. `id` must be unique and stable.
+
+### Task Organization
+
+Tasks can be organized in subdirectories for better structure:
+
+```
+tasks/
+├── 001-setup-db.ts          # Run-once migration
+├── 002-create-indexes.ts    # Run-once migration
+├── daily/
+│   ├── backup-logs.ts       # runAlways: true
+│   └── cleanup-temp.ts      # runAlways: true
+├── monitoring/
+│   └── health-check.ts      # runAlways: true
+└── migrations/
+    └── 003-add-column.ts    # Run-once migration
+```
+
+**Key Points:**
+- 📁 **Recursive Loading**: Tasks are loaded from all subdirectories
+- 🔄 **Run-Always First**: Tasks with `runAlways: true` execute before run-once tasks
+- 📝 **Flexible Organization**: Organize tasks however makes sense for your project
+- 🎯 **Execution Order**: Within each category, tasks run in alphabetical order by task ID
 
 ## Configuration
 
@@ -141,7 +187,7 @@ Add your own by implementing `ITracker` and registering it. No changes to tasks 
 # Create a new task file (generates TypeScript by default)
 runce make "human readable name"
 
-# Run tasks (uses TypeScript config by default)
+# Run tasks (loads from all subdirectories)
 runce run [--config ./config/runce.config.ts] [--tasks-dir ./tasks] [--dry-run]
          [--only id1,id2] [--since 2025-09-01] [--until 2025-10-01]
 
@@ -152,6 +198,14 @@ runce list [--config ./config/runce.config.ts] [--json]
 runce --help
 runce run --help
 ```
+
+### Execution Order
+
+When you run `runce run`, tasks execute in this order:
+1. **🔄 Always-run tasks** (`runAlways: true`) - Execute every time
+2. **🎯 Run-once tasks** - Execute only if not already applied
+
+Within each category, tasks run in alphabetical order by task ID.
 
 ## Programmatic API
 

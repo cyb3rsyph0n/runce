@@ -9,36 +9,8 @@ import { LoadedTask } from '../@interfaces/loaded-task.interface.js';
 
 export async function loadTasks(tasksDir: string): Promise<LoadedTask[]> {
   try {
-    const files = await fs.readdir(tasksDir);
-    const taskFiles = files.filter(f => f.endsWith('.ts') || f.endsWith('.js'));
-
     const loadedTasks: LoadedTask[] = [];
-
-    for (const file of taskFiles) {
-      const filePath = path.join(tasksDir, file);
-      try {
-        const checksum = await calculateChecksum(filePath);
-
-        let fileUrl: string;
-        if (file.endsWith('.ts')) {
-          // For TypeScript files, tsx should be registered by the CLI wrapper
-          fileUrl = pathToFileURL(filePath).href;
-        } else {
-          fileUrl = pathToFileURL(filePath).href;
-        }
-
-        const module = await import(fileUrl);
-        const task = module.default as RunceTask;
-
-        if (!task || typeof task !== 'object' || !task.id || typeof task.run !== 'function') {
-          throw new Error(`Invalid task format in ${file}: must export default object with id and run function`);
-        }
-
-        loadedTasks.push({ task, filePath, checksum });
-      } catch (error) {
-        throw new Error(`Failed to load task from ${file}: ${error}`);
-      }
-    }
+    await loadTasksRecursive(tasksDir, loadedTasks);
 
     // Sort by task id for consistent ordering
     return loadedTasks.sort((a, b) => a.task.id.localeCompare(b.task.id));
@@ -47,5 +19,42 @@ export async function loadTasks(tasksDir: string): Promise<LoadedTask[]> {
       throw new Error(`Tasks directory not found: ${tasksDir}`);
     }
     throw error;
+  }
+}
+
+async function loadTasksRecursive(dirPath: string, loadedTasks: LoadedTask[]): Promise<void> {
+  const entries = await fs.readdir(dirPath, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry.name);
+
+    if (entry.isDirectory()) {
+      // Recursively load tasks from subdirectories
+      await loadTasksRecursive(fullPath, loadedTasks);
+    } else if (entry.isFile() && (entry.name.endsWith('.ts') || entry.name.endsWith('.js'))) {
+      // Load task file
+      try {
+        const checksum = await calculateChecksum(fullPath);
+
+        let fileUrl: string;
+        if (entry.name.endsWith('.ts')) {
+          // For TypeScript files, tsx should be registered by the CLI wrapper
+          fileUrl = pathToFileURL(fullPath).href;
+        } else {
+          fileUrl = pathToFileURL(fullPath).href;
+        }
+
+        const module = await import(fileUrl);
+        const task = module.default as RunceTask;
+
+        if (!task || typeof task !== 'object' || !task.id || typeof task.run !== 'function') {
+          throw new Error(`Invalid task format in ${entry.name}: must export default object with id and run function`);
+        }
+
+        loadedTasks.push({ task, filePath: fullPath, checksum });
+      } catch (error) {
+        throw new Error(`Failed to load task from ${entry.name}: ${error}`);
+      }
+    }
   }
 }

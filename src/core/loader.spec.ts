@@ -96,4 +96,36 @@ describe('loader', () => {
     // 2. Create a test-specific loader
     // 3. Use end-to-end integration tests with actual files
   });
+
+  describe('recursive folder loading', () => {
+    it('should attempt to load tasks from subdirectories', async () => {
+      // Create subdirectory structure
+      const subDir = join(testDir, 'subfolder');
+      await mkdir(subDir, { recursive: true });
+
+      // Create a task file in subdirectory (will fail to import)
+      const taskContent = `export default { invalidTask: true };`;
+      await writeFile(join(subDir, 'sub-task.js'), taskContent);
+
+      // This should attempt to load from subdirectory and fail with import error
+      await expect(loadTasks(testDir)).rejects.toThrow(
+        'Failed to load task from sub-task.js'
+      );
+    });
+
+    it('should handle nested subdirectories', async () => {
+      // Create nested directory structure  
+      const nestedDir = join(testDir, 'level1', 'level2');
+      await mkdir(nestedDir, { recursive: true });
+
+      // Create a task file in nested directory (will fail to import)
+      const taskContent = `export default "not an object";`;
+      await writeFile(join(nestedDir, 'nested-task.js'), taskContent);
+
+      // Should try to load and fail with import error
+      await expect(loadTasks(testDir)).rejects.toThrow(
+        'Failed to load task from nested-task.js'
+      );
+    });
+  });
 });
