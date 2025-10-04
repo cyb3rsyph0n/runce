@@ -41,12 +41,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nurv-llc/runce.git"
+    "url": "git+https://github.com/cyb3rsyph0n/runce.git"
   },
   "bugs": {
-    "url": "https://github.com/nurv-llc/runce/issues"
+    "url": "https://github.com/cyb3rsyph0n/runce/issues"
   },
-  "homepage": "https://github.com/nurv-llc/runce#readme",
+  "homepage": "https://github.com/cyb3rsyph0n/runce#readme",
   "dependencies": {
     "commander": "^11.1.0",
     "mongodb": "^6.2.0",
