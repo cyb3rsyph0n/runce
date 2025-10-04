@@ -1,6 +1,6 @@
 {
   "name": "@nurv-llc/runce",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Run one-time tasks for Node.js services - like migrations, but for arbitrary TypeScript",
   "type": "module",
   "main": "dist/index.js",
