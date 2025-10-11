@@ -1,4 +1,4 @@
-import { ITracker, AppliedRecord, TrackerInit } from './tracker.js';
+import { ITracker, AppliedRecord, TrackerInit } from '../tracker.js';
 import { MongoClient, Collection, Db } from 'mongodb';
 
 export class MongoTracker implements ITracker {

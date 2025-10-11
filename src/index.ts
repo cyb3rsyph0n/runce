@@ -1,6 +1,8 @@
 export { RunceTask, RunceTaskContext, Config, defineConfig } from './types.js';
 export { ITracker, AppliedRecord } from './trackers/tracker.js';
-export { MongoTracker } from './trackers/mongo-tracker.js';
+export { MongoTracker } from './trackers/mongo-tracker/mongo-tracker.js';
+export { FileTracker } from './trackers/file-tracker/file-tracker.js';
+export { PostgreSQLTracker } from './trackers/postgresql-tracker/postgresql-tracker.js';
 export { runTasks } from './core/runner.js';
 export { loadTasks } from './core/loader.js';
 export { createLogger } from './core/logger.js';

@@ -1,4 +1,4 @@
-import { ITracker, AppliedRecord, TrackerInit } from './tracker.js';
+import { ITracker, AppliedRecord, TrackerInit } from '../tracker.js';
 import fs from 'fs/promises';
 import path from 'path';
 

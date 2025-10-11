@@ -2,20 +2,20 @@
 # @nurv-llc/runce
 
 [![CI](https://github.com/cyb3rsyph0n/runce/actions/workflows/ci.yml/badge.svg)](https://github.com/cyb3rsyph0n/runce/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-75%20passed-brightgreen)](https://github.com/cyb3rsyph0n/runce/actions)
+[![Tests](https://img.shields.io/badge/tests-98%20passed-brightgreen)](https://github.com/cyb3rsyph0n/runce/actions)
 [![npm version](https://img.shields.io/npm/v/@nurv-llc/runce.svg)](https://www.npmjs.com/package/@nurv-llc/runce)
 [![codecov](https://codecov.io/gh/cyb3rsyph0n/runce/branch/master/graph/badge.svg)](https://codecov.io/gh/cyb3rsyph0n/runce)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/node/v/@nurv-llc/runce.svg)](https://nodejs.org/)
 
-Run one-time **runce tasks** for your Node service—like migrations, but for arbitrary TypeScript/JavaScript. Ships with a MongoDB tracker and a pluggable interface for others.
+Run one-time **runce tasks** for your Node service—like migrations, but for arbitrary TypeScript/JavaScript. Ships with MongoDB, PostgreSQL, and File trackers with a pluggable interface for others.
 
 ## Features
 
 * ✅ Run TS/JS tasks exactly once
-* ✅ Pluggable **Tracker** (MongoDB + File tracker out of the box)
+* ✅ Pluggable **Tracker** (MongoDB, PostgreSQL + File tracker out of the box)
 * ✅ CLI + programmatic API
-* ✅ Distributed lock (MongoDB lease) to prevent concurrent runners
+* ✅ Distributed lock (MongoDB & PostgreSQL lease) to prevent concurrent runners
 * ✅ Dry-run, filters, JSON list, rich logs
 * ✅ Task scaffolding
 
@@ -23,6 +23,8 @@ Run one-time **runce tasks** for your Node service—like migrations, but for ar
 
 ```bash
 npm i @nurv-llc/runce mongodb
+# OR for PostgreSQL
+npm i @nurv-llc/runce pg
 npx runce make "initialize queues"
 ```
 
@@ -35,7 +37,7 @@ import { defineConfig } from '@nurv-llc/runce';
 export default defineConfig({
   tasksDir: './tasks',
   tracker: {
-    type: 'mongo', // or 'file' for development
+    type: 'mongo', // 'postgresql', or 'file' for development
     options: { uri: process.env.MONGO_URI, db: 'infra' },
   },
   lock: { enabled: true, ttlMs: 60000, owner: process.env.HOSTNAME },
@@ -49,7 +51,7 @@ Or use JavaScript:
 export default {
   tasksDir: './tasks',
   tracker: {
-    type: 'mongo', // or 'file' for development
+    type: 'mongo', // 'postgresql', or 'file' for development
     options: { uri: process.env.MONGO_URI, db: 'infra' },
   },
   lock: { enabled: true, ttlMs: 60000, owner: process.env.HOSTNAME },
@@ -179,6 +181,21 @@ export default {
 }
 ```
 
+**PostgreSQL Example:**
+```js
+export default {
+  tracker: { 
+    type: 'postgresql', 
+    options: { 
+      connectionString: 'postgresql://user:password@localhost:5432/mydb'
+      // OR use individual connection parameters:
+      // host: 'localhost', port: 5432, database: 'mydb', 
+      // username: 'user', password: 'password'
+    } 
+  }
+}
+```
+
 Add your own by implementing `ITracker` and registering it. No changes to tasks or runner needed.
 
 ## CLI
@@ -241,14 +258,18 @@ Passing config objects directly is useful when:
 
 ```ts
 // Example: Environment-based configuration
+const getTrackerConfig = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.DATABASE_TYPE === 'postgres' 
+      ? { type: 'postgresql', options: { connectionString: process.env.DATABASE_URL } }
+      : { type: 'mongo', options: { uri: process.env.MONGO_URI, db: process.env.DB_NAME } };
+  }
+  return { type: 'file', options: { path: './.runce-dev.json' } };
+};
+
 const config = defineConfig({
   tasksDir: './tasks',
-  tracker: {
-    type: process.env.NODE_ENV === 'production' ? 'mongo' : 'file',
-    options: process.env.NODE_ENV === 'production' 
-      ? { uri: process.env.MONGO_URI, db: process.env.DB_NAME }
-      : { path: './.runce-dev.json' }
-  },
+  tracker: getTrackerConfig(),
   lock: { 
     enabled: process.env.NODE_ENV === 'production',
     ttlMs: 60000,
@@ -284,6 +305,28 @@ export interface ITracker {
 }
 ```
 
+## PostgreSQL Tracker Options
+
+```ts
+{
+  // Option 1: Connection string
+  connectionString: string;   // e.g., 'postgresql://user:pass@localhost:5432/dbname'
+  
+  // Option 2: Individual parameters
+  host?: string;              // default: localhost
+  port?: number;              // default: 5432
+  database?: string;          // database name
+  username?: string;          // database user
+  password?: string;          // database password
+  
+  // Optional settings
+  appliedTable?: string;      // default: runce_applied
+  lockTable?: string;         // default: runce_lock
+  schema?: string;            // default: public
+  ssl?: boolean;              // default: false
+}
+```
+
 ## File Tracker Options
 
 ```ts
@@ -294,7 +337,7 @@ export interface ITracker {
 
 ## Locking
 
-The MongoDB tracker uses a lease document (`_id: 'global'`) updated with `leaseUntil`. If another process holds a valid lease, `run` exits with code 1. The file tracker doesn't support locking.
+The MongoDB and PostgreSQL trackers use a lease document/record (`_id: 'global'` or `name: 'global'`) updated with `leaseUntil`. If another process holds a valid lease, `run` exits with code 1. The file tracker doesn't support locking.
 
 ## Idempotency Patterns
 

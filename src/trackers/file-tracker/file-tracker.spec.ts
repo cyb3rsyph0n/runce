@@ -1,5 +1,5 @@
 import { FileTracker } from './file-tracker.js';
-import { AppliedRecord } from '../@interfaces/applied-record.interface.js';
+import { AppliedRecord } from '../tracker.js';
 import { writeFile, readFile, rm, mkdir } from 'fs/promises';
 import { join } from 'path';
 
